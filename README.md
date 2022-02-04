@@ -22,7 +22,7 @@ $python3 main.py "Long URL to shorten or Bit.ly url to get a clicks count"
 
 ## Usage examples
 
-```python
+```bash
 >python main.py https://www.spacex.com
 https://bit.ly/3J5tV3G
 

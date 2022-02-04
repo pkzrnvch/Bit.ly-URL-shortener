@@ -1,6 +1,6 @@
 # Bitly url shortener
 
-The script allows you to shorten links using the [Bit.ly](https://bitly.com) service, and also to find out how many times your shortened Bit.ly link has been used.
+The script allows you to shorten links using the [Bit.ly](https://bitly.com) service, and also to find out how many times your Bit.ly link has been used.
 
 ## How to install
 

@@ -5,10 +5,6 @@ from urllib.parse import urlparse
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
-
-BITLY_TOKEN = os.getenv('BITLY_TOKEN')
-
 
 def shorten_link(link):
     url = 'https://api-ssl.bitly.com/v4/shorten'
@@ -63,7 +59,7 @@ def main():
     if is_bitlink(link):
         try:
             number_of_clicks = count_clicks(link)
-            print('Количество переходов по ссылке битли:', number_of_clicks)
+            print('По вашей ссылке прошли:', number_of_clicks, 'раз(а)')
         except requests.exceptions.HTTPError:
             print('Введена неверная ссылка')
     else:
@@ -75,4 +71,6 @@ def main():
 
 
 if __name__ == '__main__':
+    load_dotenv()
+    BITLY_TOKEN = os.getenv('BITLY_TOKEN')
     main()

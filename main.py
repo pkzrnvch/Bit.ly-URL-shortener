@@ -6,10 +6,10 @@ import requests
 from dotenv import load_dotenv
 
 
-def shorten_link(link):
+def shorten_link(link, bitly_token):
     url = 'https://api-ssl.bitly.com/v4/shorten'
     headers = {
-        'Authorization': f'Bearer {BITLY_TOKEN}'
+        'Authorization': f'Bearer {bitly_token}'
     }
     payload = {
         'long_url': link
@@ -19,7 +19,7 @@ def shorten_link(link):
     return response.json()['link']
 
 
-def count_clicks(link):
+def count_clicks(link, bitly_token):
     parsed_link = urlparse(link)
     link_hostname_and_path = f'{parsed_link.hostname}{parsed_link.path}'
     url_template = ('https://api-ssl.bitly.com/v4/'
@@ -30,41 +30,43 @@ def count_clicks(link):
         'units': -1
     }
     headers = {
-        'Authorization': f'Bearer {BITLY_TOKEN}'
+        'Authorization': f'Bearer {bitly_token}'
     }
     response = requests.get(url, headers=headers, params=payload)
     response.raise_for_status()
     return response.json()['total_clicks']
 
 
-def is_bitlink(link):
+def is_bitlink(link, bitly_token):
     parsed_link = urlparse(link)
     link_hostname_and_path = f'{parsed_link.hostname}{parsed_link.path}'
     url_template = 'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}'
     url = url_template.format(bitlink=link_hostname_and_path)
     headers = {
-        'Authorization': f'Bearer {BITLY_TOKEN}'
+        'Authorization': f'Bearer {bitly_token}'
     }
     response = requests.get(url, headers=headers)
     return response.ok
 
 
 def main():
+    load_dotenv()
+    bitly_token = os.getenv('BITLY_TOKEN')
     parser = argparse.ArgumentParser(
     description='Обработка ссылок с помощью Bit.ly'
     )
     parser.add_argument('link', help='Ссылка')
     args = parser.parse_args()
     link = args.link
-    if is_bitlink(link):
+    if is_bitlink(link, bitly_token):
         try:
-            number_of_clicks = count_clicks(link)
+            number_of_clicks = count_clicks(link, bitly_token)
             print('По вашей ссылке прошли:', number_of_clicks, 'раз(а)')
         except requests.exceptions.HTTPError:
             print('Введена неверная ссылка')
     else:
         try:
-            bitlink = shorten_link(link)
+            bitlink = shorten_link(link, bitly_token)
             print(bitlink)
         except requests.exceptions.HTTPError:
             print('Введена неверная ссылка')
